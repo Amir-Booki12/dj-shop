@@ -6,6 +6,7 @@ app_name = 'store'
 
 router = routers.DefaultRouter()
 router.register('carts',views.CartViewSet,basename='carts')
+router.register('customers',views.CustomerViewSet,basename='customers')
 
 cart_item_router = routers.NestedDefaultRouter(router,'carts',lookup='cart')
 cart_item_router.register('items',views.CartItemViewSet,basename='cart_items')

@@ -1,5 +1,6 @@
 from django.db import models
 from uuid import uuid4
+from django.conf import settings
 # Create your models here.
 
 
@@ -21,6 +22,34 @@ class Product(models.Model):
     
     def __str__(self):
         return self.title
+    
+
+class Customer(models.Model):
+    GOLD = 'G'
+    BRONZE = 'B'
+    SILVER = 'S'
+ 
+    MEMBER_SHIP_CHOICES = [
+        (GOLD, 'Gold'),
+        (BRONZE, 'Bronze'),
+        (SILVER, 'Silver'),
+    ]
+    phone = models.CharField(max_length=12)
+    date_birth = models.DateField(null=True,blank=True)
+    member_ship = models.CharField(max_length=1,choices=MEMBER_SHIP_CHOICES,default=SILVER)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='customers')
+    
+    def __str__(self):
+        return f'{self.user.first_name} - {self.user.last_name}'
+    
+    class Meta:
+        permissions = [
+            ('view_history' , 'can view history')
+        ]
+ 
+ 
+ 
+ 
     
 class Cart(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid4)

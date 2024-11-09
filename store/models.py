@@ -61,4 +61,28 @@ class CartItem(models.Model):
     quantity = models.PositiveSmallIntegerField()
 
 
+class Order(models.Model):
+    PENDING = 'P'
+    COMPLETE = 'C'
+    FAILED = 'F'
     
+    PAYMENT_STATUS_CHOICES =[
+        (PENDING,'pending'),
+        (COMPLETE,'complete'),
+        (FAILED,'failed'),
+    ]
+    
+    place_At = models.DateTimeField(auto_now_add=True)
+    payment_status = models.CharField(max_length=1,choices=PAYMENT_STATUS_CHOICES,default=PENDING)
+    customer = models.ForeignKey(Customer,on_delete=models.PROTECT,related_name='orders')
+    
+    class Meta:
+        permissions = [
+            ('cancel_order', 'Can cancel order')
+        ]
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='items')
+    product = models.ForeignKey(
+        Product, on_delete=models.PROTECT, related_name='orderitems')
+    quantity = models.PositiveSmallIntegerField()
+    unit_price = models.IntegerField()
